@@ -87,8 +87,11 @@ class Player:
         print("{name} has {rem} cards remaining.".format(name = self.name, rem = len(self.cards)))
     
     def play_war(self):
-        self.hand.add_card(self.cards.pop(1, 2, 3, 4))
-        return(self.hand.hand[5])
+        self.hand.add_card(self.cards.pop(0))
+        self.hand.add_card(self.cards.pop(1))
+        self.hand.add_card(self.cards.pop(2))
+        self.hand.add_card(self.cards.pop(3))
+        return(self.hand.hand[4])
 
 
 ######################
@@ -106,7 +109,6 @@ print("Hello {name}, you have {rem} cards remaining.".format(name = player1.name
 def play_war():
     move = input("What would you like to do? Please type 'Play card', 'Check cards', or 'Quit': ")
     if move.casefold() == "play card":
-        print(player1.hand.hand)
         my_card = player1.play_card()
         pc_card = player2.play_card()
         num1 = RANKS.index(my_card[0])
@@ -114,12 +116,14 @@ def play_war():
         if num1 > num2:
             print("You won! Collect your cards!")
             player1.cards.extend(player2.hand.hand)
+            player1.cards.extend(player1.hand.hand)
             player1.hand.remove_cards()
             player2.hand.remove_cards()
             play_war()
         elif num2 > num1:
             print("You lost!")
             player2.cards.extend(player1.hand.hand)
+            player2.cards.extend(player2.hand.hand)
             player1.hand.remove_cards()
             player2.hand.remove_cards()
             play_war()
@@ -132,23 +136,37 @@ def play_war():
             if war1 > war2:
                 print("You won! Collect your cards!")
                 player1.cards.extend(player2.hand.hand)
+                player1.cards.extend(player1.hand.hand)
                 player1.hand.remove_cards()
                 player2.hand.remove_cards()
                 play_war()
             elif war2 > war1:
                 print("You lost!")
                 player2.cards.extend(player1.hand.hand)
+                player2.cards.extend(player2.hand.hand)
                 player1.hand.remove_cards()
                 player2.hand.remove_cards()
                 play_war()
-        
     elif move.casefold() == "check cards":
         player1.check_cards()
         play_war()
     elif move.casefold() == "quit":
-        return   
+        if len(player1.cards) > len(player2.cards):
+            print("You won! Thanks for playing!")
+            return
+        elif len(player2.cards) > len(player1.cards):
+            print("You lost... Better luck next time.")
+            return
+        else:
+            return   
     else:
+        print("Invalid input, please try again.")
         play_war()
+    
+    if(len(player1.cards)) == 0:
+        print("You have no cards remaining! You lose!")
+    elif(len(player2.cards)) == 0:
+        print("Your opponent has no cards remaining! You win!")
         
 play_war()
 
